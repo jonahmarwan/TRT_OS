@@ -5,22 +5,14 @@ void dummy_test_entrypoint() {
 #include "./std/io.h"
 #include "./drivers/vga.h"
 #include "./idt.h"
+#include "./std/util.h"
 
 
 void main(){
     clear_screen();
-    outb(0x3d4, 14);
-    int position = inb(0x3d5);
-    position = position << 8;
-    outb(0x3d4, 15);
-    position += inb(0x3d5);
-    int curposoff = position * 2;
     idt_init();
-    char *vga = 0xb8000;
-    vga[curposoff] = 'X';
-    vga[curposoff+1] = 0x0f;
-
-    int x = 5 / 0;
+    write_text("Hello from Kernel!", 0, 0); 
+    asm volatile("int $31");
     while(1){
         asm volatile("hlt");
     }

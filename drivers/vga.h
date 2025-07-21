@@ -10,7 +10,7 @@ void write_text(const char* str, uint8_t row, uint8_t col) {
     volatile char* video = (volatile char*) 0xB8000 + (row * 80 + col) * 2;
     while (*str) {
         *video++ = *str++;
-        *video++ = 0x0F; // white text
+        *video++ = 0x0f; // white text
     }
 }
 

@@ -33,7 +33,7 @@ jmp $
 load_kernel:
     mov bx, KERNEL_OFFSET
     mov ah, 0x02
-    mov al, 2
+    mov al, 10
     mov ch, 0
     mov cl, 2
     mov dh, 0
