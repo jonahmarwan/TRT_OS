@@ -187,11 +187,11 @@ void print_letter(u8 scancode) {
              * it may still be a scancode we haven't implemented yet, or
              * maybe a control/escape sequence */
             if (scancode <= 0x7f) {
-                write_text("Unknown key down");
+               //write_text("Unknown key down");
             } else if (scancode <= 0x39 + 0x80) {
-                write_text("key up ");
-                print_letter(scancode - 0x80);
-            } else write_text("Unknown key up");
+                // write_text("key up ");
+                // print_letter(scancode - 0x80);
+            } //else write_text("Unknown key up");
             break;
     }
 }

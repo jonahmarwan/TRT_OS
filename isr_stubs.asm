@@ -309,5 +309,5 @@ irq0:
 irq1:
     cli
     push byte 0
-    push byte 32
+    push byte 33
     common_irq_stub

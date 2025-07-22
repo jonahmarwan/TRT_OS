@@ -118,6 +118,9 @@ void idt_init() {
     outb(0xa1, 0x0);
 
     set_idt_gate(32, (uint32_t)irq0);
+    uint8_t mask = inb(0x21);
+    mask &= ~(1 << 1);
+    outb(0x21, mask);
     set_idt_gate(33, (uint32_t)irq1);
     idt_load();
 }

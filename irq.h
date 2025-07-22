@@ -18,9 +18,23 @@ typedef struct {
 #include "./std/util.h"
 #include "./drivers/keyboard.h"
 void irq_handler(registers_t r){
-   if(r.int_no == 33){while(1){kbdcallback();}}
-   if(r.int_no >= 40) outb(0xa0, 0x20);
-    outb(0x20, 0x20);
+   switch(r.int_no){
+       case 32:
+           timercallback();
+           break;
+       case 33:
+           kbdcallback();
+           break;
+       default:
+           write_text("Unhandled IRQ: ");
+           char *result;
+           int_to_ascii(r.int_no, result);
+           write_text(result);
+           break;
+    }
+    if(r.int_no >= 40) outb(0xa0, 0x20);
+    outb(0x20, 0x20);   
+
  
 }
 
