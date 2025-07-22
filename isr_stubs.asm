@@ -31,6 +31,8 @@ global isr28
 global isr29
 global isr30
 global isr31
+global irq0
+global irq1
 DIVIDEBYZERO db "CPU Exception: Divide By Zero", 0
 DEBUG db "CPU Exception: Debug Error", 0
 NONMASKABLE db "CPU Exception: Non Maskable Interrupt", 0
@@ -52,6 +54,8 @@ ALIGNMENTCHECK db "CPU Exception: Alignment Check", 0
 MACHINECHECK db "CPU Exception: Machine Check", 0
 RESERVED db "CPU Exception: Reserved", 0
 %include "./printpm.asm"
+extern irq_handler
+
 
 %macro isr_common_stub 1
     pusha
@@ -77,6 +81,29 @@ RESERVED db "CPU Exception: Reserved", 0
     iret
 %endmacro
 
+%macro common_irq_stub 0
+    pusha
+    mov ax, ds
+    push eax
+    mov ax, 0x10
+    mov ds, ax
+    mov es, ax
+    mov gs, ax
+    mov fs, ax
+
+    call irq_handler
+
+    pop eax
+    mov ds, ax
+    mov es, ax
+    mov gs, ax
+    mov fs, ax
+    popa
+    add esp, 8
+    sti
+    iret
+
+%endmacro
 
 isr0: 
     cli
@@ -271,3 +298,16 @@ isr31:
     push byte 0
     push byte 31
     isr_common_stub RESERVED
+
+
+irq0:
+    cli
+    push byte 0
+    push byte 32
+    common_irq_stub
+
+irq1:
+    cli
+    push byte 0
+    push byte 32
+    common_irq_stub

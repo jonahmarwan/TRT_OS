@@ -54,6 +54,9 @@ extern void isr28();
 extern void isr29();
 extern void isr30();
 extern void isr31();
+extern void irq0();
+extern void irq1();
+
 static void set_idt_gate(int n, uint32_t handler) {
     idt[n].offset_1 = handler & 0xFFFF;
     idt[n].selector = 0x08; // kernel code segment
@@ -103,8 +106,6 @@ void idt_init() {
     idt_ptr.limit = (sizeof(struct InterruptDescriptor32) * IDT_size) - 1;
     idt_ptr.base = (uint32_t)&idt;
 
-    idt_load();
-
     outb(0x20, 0x11);
     outb(0xa0, 0x11);
     outb(0x21, 0x20);
@@ -115,6 +116,10 @@ void idt_init() {
     outb(0xa1, 0x01);
     outb(0x21, 0x0);
     outb(0xa1, 0x0);
+
+    set_idt_gate(32, (uint32_t)irq0);
+    set_idt_gate(33, (uint32_t)irq1);
+    idt_load();
 }
 
 
