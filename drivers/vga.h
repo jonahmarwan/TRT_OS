@@ -16,6 +16,37 @@ int get_offset(int col, int row);
 int get_offset_row(int offset);
 int get_offset_col(int offset);
 
+void vgabackspace(){
+    int offset = get_cursor_offset();
+    int col = get_offset_col(offset);
+    int row = get_offset_row(offset);
+
+    if (col == 0) {
+        if (row == 0) {
+            return; // Top-left of screen, nothing to do
+        }
+        row -= 1;
+        int midoff = get_offset(col, row);
+        unsigned char* addr = (unsigned char*) 0xB8000;
+        if(!(addr[midoff] == 0x20)){
+            for(int i = 1; i < 79; i++){
+                midoff = get_offset(i, row);
+                if(addr[midoff] == 0x20){
+                    col = i;
+                    i = 79;
+                }
+            }
+        } 
+    } else {
+        col -= 1;
+    }
+
+    kprint_at(" ",col, row);
+    int new_offset = get_offset(col, row);
+    set_cursor_offset(new_offset);
+    
+}
+
 void kprint_at(char *message, int col, int row) {
     int offset;
     if (col >= 0 && row >= 0)

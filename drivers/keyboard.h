@@ -1,12 +1,23 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
-
+bool is_extended = false;
+bool caps_lock = false;
 void kbdcallback(){
-    u8 scancode = inb(0x60);
-    print_letter(scancode);
+    if (inb(0x64) & 1) {
+        u8 scancode = inb(0x60);
+        if(scancode == 0xE0){
+            is_extended = true;
+            return;
+        }
+        print_letter(scancode);
+    }
 }
 
 void print_letter(u8 scancode) {
+    if(is_extended){
+        is_extended = false;
+        return;
+    }
     switch (scancode) {
         case 0x0:
             write_text("ERROR");
@@ -51,40 +62,50 @@ void print_letter(u8 scancode) {
             write_text("+");
             break;
         case 0x0E:
-            write_text("Backspace");
+            vgabackspace();
             break;
         case 0x0F:
             write_text("Tab");
             break;
         case 0x10:
-            write_text("Q");
+            if(caps_lock) write_text("Q");
+            else{write_text("q");}
             break;
         case 0x11:
-            write_text("W");
+            if(caps_lock) write_text("W");
+            else{write_text("w");}
             break;
         case 0x12:
-            write_text("E");
+            if(caps_lock) write_text("E");
+            else{write_text("e");}
             break;
         case 0x13:
-            write_text("R");
+            if(caps_lock) write_text("R");
+            else{write_text("r");}
             break;
         case 0x14:
-            write_text("T");
+            if(caps_lock) write_text("T");
+            else{write_text("t");}
             break;
         case 0x15:
-            write_text("Y");
+            if(caps_lock) write_text("Y");
+            else{write_text("y");}
             break;
         case 0x16:
-            write_text("U");
+            if(caps_lock) write_text("U");
+            else{write_text("u");}
             break;
         case 0x17:
-            write_text("I");
+            if(caps_lock) write_text("I");
+            else{write_text("i");}
             break;
         case 0x18:
-            write_text("O");
+            if(caps_lock) write_text("O");
+            else{write_text("o");}
             break;
         case 0x19:
-            write_text("P");
+            if(caps_lock) write_text("P");
+            else{write_text("p");}
             break;
 	case 0x1A:
 	    write_text("[");
@@ -93,37 +114,46 @@ void print_letter(u8 scancode) {
 	    write_text("]");
 	    break;
 	case 0x1C:
-	    write_text("ENTER");
+	    write_text("\n");
 	    break;
 	case 0x1D:
 	    write_text("LCtrl");
 	    break;
 	case 0x1E:
-	    write_text("A");
+        if(caps_lock) write_text("A");
+        else{write_text("a");}
 	    break;
 	case 0x1F:
-	    write_text("S");
-	    break;
+	    if(caps_lock) write_text("S");
+        else{write_text("s");}
+        break;
         case 0x20:
-            write_text("D");
+            if(caps_lock) write_text("D");
+            else{write_text("d");}
             break;
         case 0x21:
-            write_text("F");
+            if(caps_lock) write_text("F");
+            else{write_text("f");}
             break;
         case 0x22:
-            write_text("G");
+            if(caps_lock) write_text("G");
+            else{write_text("g");}
             break;
         case 0x23:
-            write_text("H");
+            if(caps_lock) write_text("H");
+            else{write_text("h");}
             break;
         case 0x24:
-            write_text("J");
+            if(caps_lock) write_text("J");
+            else{write_text("j");}
             break;
         case 0x25:
-            write_text("K");
+            if(caps_lock) write_text("K");
+            else{write_text("k");}
             break;
         case 0x26:
-            write_text("L");
+            if(caps_lock) write_text("L");
+            else{write_text("l");}
             break;
         case 0x27:
             write_text(";");
@@ -141,25 +171,32 @@ void print_letter(u8 scancode) {
 	    write_text("\\");
 	    break;
 	case 0x2C:
-	    write_text("Z");
-	    break;
+	    if(caps_lock) write_text("Z");
+        else{write_text("z");}
+        break;
 	case 0x2D:
-	    write_text("X");
-	    break;
+	    if(caps_lock) write_text("X");
+        else{write_text("x");}
+        break;
 	case 0x2E:
-	    write_text("C");
-	    break;
+	    if(caps_lock) write_text("C");
+        else{write_text("c");}
+        break;
 	case 0x2F:
-	    write_text("V");
-	    break;
+	    if(caps_lock) write_text("V");
+        else{write_text("v");}
+        break;
         case 0x30:
-            write_text("B");
+            if(caps_lock) write_text("B");
+            else{write_text("b");}
             break;
         case 0x31:
-            write_text("N");
+            if(caps_lock) write_text("N");
+            else{write_text("n");}
             break;
         case 0x32:
-            write_text("M");
+            if(caps_lock) write_text("M");
+            else{write_text("m");}
             break;
         case 0x33:
             write_text(",");
@@ -180,7 +217,10 @@ void print_letter(u8 scancode) {
             write_text("LAlt");
             break;
         case 0x39:
-            write_text("Spc");
+            write_text(" ");
+            break;
+        case 0x3A:
+            caps_lock = !caps_lock;
             break;
         default:
             /* 'keuyp' event corresponds to the 'keydown' + 0x80 

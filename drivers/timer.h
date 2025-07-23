@@ -6,6 +6,18 @@ void timercallback(){
     tick++;
 }
 
+void sleep(u32 ms){
+    ms = (ms * 50) / 1000;
+    u32 start_ticks = tick;
+
+    while(tick - start_ticks < ms) asm volatile("hlt");
+}
+
+void sleep_ticks(u32 ticks){
+    u32 start_ticks = ticks;
+    while(tick - start_ticks < ticks) asm volatile("hlt");
+}
+
 void init_timer(u32 freq){
     u32 divisor = 1193180 / freq;
     u8 low  = (u8)(divisor & 0xFF);
