@@ -9,7 +9,7 @@
 #include "./std/util.h"
 #include "./drivers/keyboard.h"
 #include "./drivers/timer.h"
-#include "./mmu/pagedir.h"
+#include "./virt/paging.h"
 void main(){
     clear_screen();
     idt_init();
