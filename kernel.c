@@ -10,19 +10,24 @@
 #include "./drivers/keyboard.h"
 #include "./drivers/timer.h"
 #include "./mmu/pagedir.h"
-pagetable_t* testpagetable;
 void main(){
     clear_screen();
     idt_init();
     init_timer(50);
     while (inb(0x64) & 1) inb(0x60);
     outb(0x21, 0xFC);
-    for(int i = 0; i < 1024; i++){
-        testpagetable = allocpagetable();
-        map_pagedirentry(pagedir, i, testpagetable);
+    PGE_t* identity_table = (PGE_t*)alloc_frame();
+
+    uint32_t phys_frame = 0x00000000;
+    for (int i = 0 ; i < 1024; i++) {
+        map_pagetableentry(identity_table, i, phys_frame);
+        phys_frame += 0x1000;
     }
+
+    map_pagedirentry(pagedir, 0, identity_table);
+
     init_paging();
-    volatile uint32_t* ptr = (uint32_t*)0x07FFFFFF;
-    *ptr = 1234;
+
+    test_paging();
     asm volatile("sti");
 }

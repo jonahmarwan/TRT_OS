@@ -1,3 +1,6 @@
+; This file was copy-pasted from a real open-source git repository.
+
+
 gdt_start: ; don't remove the labels, they're needed to compute sizes and jumps
     ; the GDT starts with a null 8-byte
     dd 0x0 ; 4 byte
