@@ -96,7 +96,7 @@ PGE_t* create_identity_pagetable () {
 
     for (int i = 0; i < 1024; i++) {
         uint32_t frame = alloc_frame();
-        map_pagedirentry(new_table, i, frame);
+        map_pagedirentry(new_table, i, (PGE_t*)frame);
     }
     return new_table;
 }

@@ -2,6 +2,9 @@
 #define KEYBOARD_H
 bool is_extended = false;
 bool caps_lock = false;
+void print_letter(u8 scancode);
+
+
 void kbdcallback(){
     if (inb(0x64) & 1) {
         u8 scancode = inb(0x60);

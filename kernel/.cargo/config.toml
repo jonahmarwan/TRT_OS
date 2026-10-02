@@ -1,0 +1,16 @@
+[build]
+# Points directly to your target file inside the kernel folder
+target = "i686-unknown-none.json"
+
+[unstable]
+build-std = ["core", "compiler_builtins"]
+build-std-features = ["compiler-builtins-mem"]
+target-applies-to-host = false
+
+[target.i686-unknown-none]
+rustflags = [
+    "-C", "link-arg=-Tlinker.ld",
+]
+[env]
+# Force the C compiler to compile as a raw cross-platform ELF target
+CC_i686-unknown-none = "i686-elf-gcc" 

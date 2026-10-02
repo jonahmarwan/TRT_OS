@@ -1,5 +1,7 @@
 #ifndef TIMER_H
 #define TIMER_H
+typedef unsigned int u32;
+typedef unsigned char u8;
 u32 tick = 0;
 
 void timercallback(){

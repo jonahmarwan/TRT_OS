@@ -1,0 +1,24 @@
+[package]
+name = "HornetOS-kernel"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "kernel"
+path = "src/kernel.rs"
+
+
+
+[dependencies]
+# Note: cc version 1.5+ might not exist yet,
+# using a wildcard or standard stable string to prevent resolution errors.
+
+[build-dependencies]
+cc = "1.5.0"
+nasm-rs = "0.3.2"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

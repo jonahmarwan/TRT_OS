@@ -4,7 +4,7 @@
 #define MAX_COLS 80
 #define MAX_ROWS 25
 #define WHITE_ON_BLACK 0x0f
-#define VIDEO_MEMORY 0xB8000
+#define VIDEO_MEMORY ((char*)0xB8000)
 #define REG_SCREEN_CTRL 0x3d4
 #define REG_SCREEN_DATA 0x3d5
 #define RED_ON_WHITE 0xf4
@@ -15,7 +15,7 @@ int print_char(char c, int col, int row, char attr);
 int get_offset(int col, int row);
 int get_offset_row(int offset);
 int get_offset_col(int offset);
-
+void kprint_at(char *message, int col, int row);
 void vgabackspace(){
     int offset = get_cursor_offset();
     int col = get_offset_col(offset);
@@ -57,19 +57,30 @@ void kprint_at(char *message, int col, int row) {
         col = get_offset_col(offset);
     }
 
+
     int i = 0;
     while (message[i] != 0) {
-        offset = print_char(message[i++], col, row, WHITE_ON_BLACK);
-        /* Compute row/col for next iteration */
-        row = get_offset_row(offset);
-        col = get_offset_col(offset);
+        // 2. Pass the initial row/col for the FIRST character only.
+        // For every character after, pass -1, -1 to let the VGA driver advance naturally.
+        if (i == 0) {
+            offset = print_char(message[i], col, row, WHITE_ON_BLACK);
+        } else {
+            offset = print_char(message[i], -1, -1, WHITE_ON_BLACK);
+        }
+        i++;
     }
+
 }
 
 void write_text(char *message) {
     kprint_at(message, -1, -1);
 }
 
+void write_textnigga() {
+    unsigned char *vidmem = (unsigned char*)0xB8000;
+    vidmem[0] = 'X';      // Print 'X' in the top-left corner
+    vidmem[1] = 0x0F;     // White on black
+}
 
 int print_char(char c, int col, int row, char attr) {
     unsigned char *vidmem = (unsigned char*) VIDEO_MEMORY;
